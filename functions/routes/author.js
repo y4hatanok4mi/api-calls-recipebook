@@ -29,15 +29,15 @@ router.get('/:name', async (req, res) => {
 // Create an author
 router.post('/', async (req, res) => {
     try {
-        const { name, age } = req.body;
-        if (!name || !age) {
-            return res.status(400).json({ message: 'Name and age are required' });
+        const { name, ingredients, steps } = req.body;
+        if (!name || !ingredients || !steps) {
+            return res.status(400).json({ message: 'Name, ingredients and steps are required' });
         }
         const existingAuthor = await AuthorModel.findOne({ name });
         if (existingAuthor) {
             return res.status(400).json({ message: 'Author already exists' });
         }
-        const newAuthor = await AuthorModel.create({ name, age });
+        const newAuthor = await AuthorModel.create({ name, ingredients, steps });
         return res.status(201).json({ message: 'Author created successfully', author: newAuthor });
     } catch (err) {
         return res.status(400).json({ message: err.message });
