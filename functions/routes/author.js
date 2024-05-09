@@ -3,7 +3,7 @@ const AuthorModel = require('../models/author');
 
 const router = express.Router();
 
-// GET all authors
+// GET all recipe
 router.get('/', async (req, res) => {
     try {
         const authors = await AuthorModel.find();
@@ -13,8 +13,8 @@ router.get('/', async (req, res) => {
     }
 });
 
-// GET a single author
-router.get('/:id', async (req, res) => {
+// GET a recipe
+router.get('/:name', async (req, res) => {
     try {
         const author = await AuthorModel.findById(req.params.id);
         if (!author) {
@@ -45,7 +45,7 @@ router.post('/', async (req, res) => {
 });
 
 // UPDATE an author
-router.patch('/:id', async (req, res) => {
+router.patch('/:name', async (req, res) => {
     try {
         const { name } = req.body;
         const author = await AuthorModel.findByIdAndUpdate(req.params.id, { name }, { new: true });
@@ -59,7 +59,7 @@ router.patch('/:id', async (req, res) => {
 });
 
 // DELETE an author
-router.delete('/:id', async (req, res) => {
+router.delete('/:name', async (req, res) => {
     try {
         const author = await AuthorModel.findByIdAndDelete(req.params.id);
         if (!author) {
