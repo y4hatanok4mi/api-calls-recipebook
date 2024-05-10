@@ -3,7 +3,8 @@ const AuthorModel = require('../models/author');
 
 const router = express.Router();
 
-// GET all recipe
+
+// GET all authors
 router.get('/', async (req, res) => {
     try {
         const authors = await AuthorModel.find();
@@ -13,18 +14,19 @@ router.get('/', async (req, res) => {
     }
 });
 
-// GET a recipe
-router.get('/:name', async (req, res) => {
+// GET a single recipe
+router.get('/:id', async (req, res) => {
     try {
-        const author = await AuthorModel.findById(req.params.name);
+        const author = await AuthorModel.findById(req.params.id);
         if (!author) {
-            return res.status(404).json({ message: 'Recipe not found' });
+            return res.status(404).json({ message: 'Author not found' });
         }
         return res.json(author);
     } catch (err) {
         return res.status(500).json({ message: err.message });
     }
 });
+
 
 // Get recipes by cuisine
 router.get('/:cuisine', async (req, res) => {
@@ -38,6 +40,7 @@ router.get('/:cuisine', async (req, res) => {
 });
 
 // Create a Recipe
+
 router.post('/', async (req, res) => {
     try {
         const { name, ingredients, steps } = req.body;
