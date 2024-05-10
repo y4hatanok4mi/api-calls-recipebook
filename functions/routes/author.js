@@ -43,20 +43,21 @@ router.get('/:cuisine', async (req, res) => {
 
 router.post('/', async (req, res) => {
     try {
-        const { name, ingredients, steps } = req.body;
-        if (!name || !ingredients || !steps) {
-            return res.status(400).json({ message: 'Name, ingredients and steps are required' });
+        const { name, ingredients, steps, cuisine } = req.body; // Include cuisine in request body
+        if (!name || !ingredients || !steps || !cuisine) { // Check if cuisine is provided
+            return res.status(400).json({ message: 'Name, ingredients, steps, and cuisine are required' });
         }
         const existingAuthor = await AuthorModel.findOne({ name });
         if (existingAuthor) {
             return res.status(400).json({ message: 'Recipe already exists' });
         }
-        const newAuthor = await AuthorModel.create({ name, ingredients, steps });
+        const newAuthor = await AuthorModel.create({ name, ingredients, steps, cuisine }); // Include cuisine in author creation
         return res.status(201).json({ message: 'Recipe created successfully', author: newAuthor });
     } catch (err) {
         return res.status(400).json({ message: err.message });
     }
 });
+
 
 // UPDATE an Recipe
 router.patch('/:id', async (req, res) => {
