@@ -1,4 +1,4 @@
-const express = require('express');
+const express = require ('express');
 const AuthorModel = require('../models/author');
 
 const router = express.Router();
@@ -16,9 +16,9 @@ router.get('/', async (req, res) => {
 // GET a recipe
 router.get('/:name', async (req, res) => {
     try {
-        const author = await AuthorModel.findById(req.params.id);
+        const author = await AuthorModel.findById(req.params.name);
         if (!author) {
-            return res.status(404).json({ message: 'Author not found' });
+            return res.status(404).json({ message: 'Recipe not found' });
         }
         return res.json(author);
     } catch (err) {
@@ -26,7 +26,18 @@ router.get('/:name', async (req, res) => {
     }
 });
 
-// Create an author
+// Get recipes by cuisine
+router.get('/:cuisine', async (req, res) => {
+    try {
+        const { cuisine } = req.params;
+        const recipes = await recipe.find({ cuisine });
+        res.json(recipes);
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+});
+
+// Create a Recipe
 router.post('/', async (req, res) => {
     try {
         const { name, ingredients, steps } = req.body;
@@ -35,40 +46,65 @@ router.post('/', async (req, res) => {
         }
         const existingAuthor = await AuthorModel.findOne({ name });
         if (existingAuthor) {
-            return res.status(400).json({ message: 'Author already exists' });
+            return res.status(400).json({ message: 'Recipe already exists' });
         }
         const newAuthor = await AuthorModel.create({ name, ingredients, steps });
-        return res.status(201).json({ message: 'Author created successfully', author: newAuthor });
+        return res.status(201).json({ message: 'Recipe created successfully', author: newAuthor });
     } catch (err) {
         return res.status(400).json({ message: err.message });
     }
 });
 
-// UPDATE an author
-router.patch('/:name', async (req, res) => {
+// UPDATE an Recipe
+router.patch('/:id', async (req, res) => {
     try {
-        const { name } = req.body;
-        const author = await AuthorModel.findByIdAndUpdate(req.params.id, { name }, { new: true });
-        if (!author) {
-            return res.status(404).json({ message: 'Author not found' });
+        if(req.body.name != null){
+            res.author.name = req.body.name;
         }
-        return res.json(author);
-    } catch (err) {
-        return res.status(400).json({ message: err.message });
+        const updatedAuthor = await res.author.save();
+        res.json(updatedAuthor);
+    }
+    catch (err){
+        res.status(400).json({message: err.message});
     }
 });
 
-// DELETE an author
-router.delete('/:name', async (req, res) => {
+router.put('/:id', getAuthor, async (req, res) =>{
+    try{
+        const updatedAuthor = await AuthorModel.findByIdAndUpdate(
+            req.params.id,
+            req.body,
+            {new: true}
+        );
+        res.json(updatedAuthor);
+    }
+    catch (err){
+        res.status(400).json({message: err.message});
+    }
+});
+
+// DELETE an recipe
+router.delete('/:id', getAuthor,async (req, res) => {
     try {
-        const author = await AuthorModel.findByIdAndDelete(req.params.id);
-        if (!author) {
-            return res.status(404).json({ message: 'Author not found' });
-        }
-        return res.json({ message: 'Author deleted' });
+        await AuthorModel.findByIdAndDelete(req.params.id);
+        res.json({message: 'Recipe  Deleted'});
     } catch (err) {
         return res.status(500).json({ message: err.message });
     }
 });
+
+async function getAuthor(req, res, next) {
+    try {
+        const author = await AuthorModel.findById(req.params.id);
+        if (!author) {
+            return res.status(404).json({ message: 'Recipe not found' });
+        }
+        res.author = author;
+        next();
+    } catch (err) {
+        return res.status(500).json({ message: err.message });
+    }
+}
+
 
 module.exports = router;

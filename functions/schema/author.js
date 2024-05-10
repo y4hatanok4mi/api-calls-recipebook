@@ -13,7 +13,11 @@ const authorSchema = new Schema({
     steps: [{
         type: String,
         required: true,
-    }],
+    }], 
+    cuisine: {
+        type: String,
+        required: true,
+    }
 });
 
 module.exports = authorSchema;
