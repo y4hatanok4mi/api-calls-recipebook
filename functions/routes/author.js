@@ -110,5 +110,28 @@ async function getAuthor(req, res, next) {
     }
 }
 
+const isAuthenticated = require('./middleware/auth');
+
+let favoriteItems = [];
+
+router.get('/favorites', (req, res) => {
+    res.json({ favorites: favoriteItems });
+});
+
+router.post('/favorites', isAuthenticated, (req, res) => {
+    const newItem = req.body.item;
+    favoriteItems.push(newItem);
+    res.json({ message: 'Favorite item added successfully' });
+});
+
+router.delete('/favorites/:id', isAuthenticated, (req, res) => {
+    const itemId = req.params.id;
+    favoriteItems = favoriteItems.filter(item => item.id !== itemId);
+    res.json({ message: 'Favorite item removed successfully' });
+});
+
 
 module.exports = router;
+
+
+
