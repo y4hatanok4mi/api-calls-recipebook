@@ -7,8 +7,8 @@ const cors = require ('cors');
 
 const app = express();
 
-const dbCloudUrl= 'mongodb+srv://IanRey:IanRey23@cluster0.l3hgyiz.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0';
-const dbLocalUrl = 'mongodb://localhost:27017/express-mongo-api';
+const dbCloudUrl= 'mongodb+srv://recipetry:qwr1234@recipes.pxbfhwm.mongodb.net/';
+const dbLocalUrl = 'mongodb://localhost:27017/api-calls';
 
 app.use(cors());
 app.use(express.json());
